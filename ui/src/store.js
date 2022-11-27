@@ -5,8 +5,8 @@ import { listReducer } from './reducers/listReducer'
 
 const reducer = combineReducers({
   [neoFeedApi.reducerPath]: neoFeedApi.reducer,
-  list: listReducer
-});
+  list: listReducer,
+})
 
 export const store = configureStore({
   reducer,

@@ -7,8 +7,8 @@ const formattedDate = date.toISOString().split('T')[0]
 const initialState = {
   date: {
     start: formattedDate,
-    end: formattedDate
-  }
+    end: formattedDate,
+  },
 }
 
 export const listReducer = (state = initialState, action) => {
