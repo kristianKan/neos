@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useGetNeosByDateQuery } from '../services/neoFeed'
+import { useGetNeosByDateQuery } from '../services/neoApi'
 import { setDate } from '../actions/listAction'
 import DatePicker from 'react-datepicker'
 import Neos from './Neos'
@@ -10,8 +10,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 const List = () => {
   const date = useSelector((state) => state.list.date)
   const dispatch = useDispatch()
-  const { data, error, isLoading, isSuccess, isError } =
-    useGetNeosByDateQuery(date)
+  const { data, error, isLoading } = useGetNeosByDateQuery(date)
 
   const onDateChange = () => {
     return (date) => {
@@ -24,28 +23,27 @@ const List = () => {
     }
   }
 
-  let content
-  let neos
-
-  if (isLoading) {
-    content = <div>Loading...</div>
-  } else if (isSuccess) {
-    content = data.element_count
-    neos = data.near_earth_objects
-  } else if (isError) {
-    content = <div>{error.toString()}</div>
-  }
-
   return (
-    <div>
-      <h2>Number of Neos: {content}</h2>
-      <DatePicker
-        selected={new Date(date.start)}
-        onChange={onDateChange()}
-        dateFormat="yyyy-MM-dd"
-      />
-      <Neos data={neos}/>
-    </div>
+    <>
+      {error ? (
+        <>Oh no, there was an error</>
+      ) :
+      isLoading ? (
+        <>loading...</>
+      ) : data ? (
+        <>
+          <div>
+            <h2>Number of Neos: {data.element_count}</h2>
+            <DatePicker
+              selected={new Date(date.start)}
+              onChange={onDateChange()}
+              dateFormat="yyyy-MM-dd"
+            />
+            <Neos data={data.near_earth_objects}/>
+          </div>
+        </>
+      ) : null}
+    </>
   )
 }
 

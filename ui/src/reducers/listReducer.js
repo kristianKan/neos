@@ -1,4 +1,4 @@
-import { SET_DATE } from '../actionTypes/actionTypes'
+import { SET_DATE, SET_SELECTED_NEO } from '../actionTypes/actionTypes'
 
 const timeElapsed = Date.now()
 const date = new Date(timeElapsed)
@@ -17,6 +17,12 @@ export const listReducer = (state = initialState, action) => {
       return {
         ...state,
         date: action.date,
+      }
+
+    case SET_SELECTED_NEO:
+      return {
+        ...state,
+        id: action.id,
       }
 
     default:

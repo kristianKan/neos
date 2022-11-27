@@ -1,5 +1,8 @@
 import React, { useRef, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from "react-router-dom";
 import * as d3 from 'd3'
+import { setSelectedNeo } from '../actions/listAction'
 
 const height = 500;
 const width = 500;
@@ -12,6 +15,8 @@ const margin = {
 const customElastic = d3.easeElastic.period(0.6)
 
 const Neos = (props) => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate();
   const d3Container = useRef(null)
 
   const x = d3.scaleLinear()
@@ -21,6 +26,11 @@ const Neos = (props) => {
   const r = d3.scaleSqrt()
     .domain([10, 300])
     .range([1, 10])
+
+  const onClick = (d) => {
+    dispatch(setSelectedNeo(d.id))
+    navigate(`/neo/${d.id}`);
+  }
 
   useEffect(
     () => {
@@ -60,7 +70,7 @@ const Neos = (props) => {
             }
           )
           .style('stroke', '#000')
-          .on('click', (e, d) => console.log(d));
+          .on('click', (e, d) => onClick(d));
       }
     },
   )

@@ -1,17 +1,17 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
-import { neoFeedApi } from './services/neoFeed'
+import { neoApi } from './services/neoApi'
 import { listReducer } from './reducers/listReducer'
 
 const reducer = combineReducers({
-  [neoFeedApi.reducerPath]: neoFeedApi.reducer,
+  [neoApi.reducerPath]: neoApi.reducer,
   list: listReducer,
 })
 
 export const store = configureStore({
   reducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(neoFeedApi.middleware),
+    getDefaultMiddleware().concat(neoApi.middleware),
 })
 
 setupListeners(store.dispatch)

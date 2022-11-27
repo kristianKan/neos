@@ -1,4 +1,4 @@
-import { SET_DATE } from '../actionTypes/actionTypes'
+import { SET_DATE, SET_SELECTED_NEO } from '../actionTypes/actionTypes'
 
 const setDate = (date) => {
   return {
@@ -7,4 +7,11 @@ const setDate = (date) => {
   }
 }
 
-export { setDate }
+const setSelectedNeo = (id) => {
+  return {
+    type: SET_SELECTED_NEO,
+    id,
+  }
+}
+
+export { setDate, setSelectedNeo }
