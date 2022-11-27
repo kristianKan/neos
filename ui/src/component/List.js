@@ -1,20 +1,29 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useGetNeosByDateQuery } from '../services/neoFeed'
+import DatePicker from 'react-datepicker'
+import { setDate } from '../actions/listAction'
 
-const DATE = {
-  start: '2015-09-07',
-  end: '2015-09-08',
-}
+import "react-datepicker/dist/react-datepicker.css";
 
 const List = () => {
-  const { data, error, isLoading, isSuccess, isError } = useGetNeosByDateQuery(DATE)
-  const date = useSelector((state) => state.list.neosCount)
+  const date = useSelector((state) => state.list.date)
+  const dispatch = useDispatch()
+  const { data, error, isLoading, isSuccess, isError } = useGetNeosByDateQuery(date)
+
+  const onDateChange = () => {
+    return (date) => {
+      const start = date.toISOString().split('T')[0];
+      const end = new Date(date.setDate(date.getDate() + 6)).toISOString().split('T')[0]
+      const formattedDate = { start, end }
+      dispatch(setDate(formattedDate))
+    }
+  }
 
   let content
 
   if (isLoading) {
-    content = <div text="Loading..." />
+    content = <div>Loading...</div>
   } else if (isSuccess) {
     content = data.element_count
   } else if (isError) {
@@ -24,6 +33,11 @@ const List = () => {
   return (
     <div>
       <h2>Number of Neos: {content}</h2>
+      <DatePicker
+        selected={new Date(date.start)}
+        onChange={onDateChange()}
+        dateFormat="yyyy-MM-dd"
+      />
     </div>
   )
 }
