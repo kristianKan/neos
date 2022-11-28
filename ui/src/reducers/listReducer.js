@@ -2,12 +2,12 @@ import { SET_DATE, SET_SELECTED_NEO } from '../actionTypes/actionTypes'
 
 const timeElapsed = Date.now()
 const date = new Date(timeElapsed)
-const formattedDate = date.toISOString().split('T')[0]
+const start = date.toISOString().split('T')[0]
 
 const initialState = {
   date: {
-    start: formattedDate,
-    end: formattedDate,
+    start: start,
+    end: new Date(date.setDate(date.getDate() + 6)).toISOString().split('T')[0],
   },
 }
 

@@ -39,7 +39,7 @@ const Error = styled.div`
   align-items: center;
   height: 100%;
   font-size: 50px;
-  color: #fff;
+  color: #ffe000;
 `
 
 const Spin = keyframes`
@@ -87,7 +87,7 @@ const List = () => {
         />
       </Header>
       {error ? (
-        <Error>Oh no... ERROR!</Error>
+        <Error>Oh no... {error.error}</Error>
       ) : data ? (
         <Neos data={data.near_earth_objects} />
       ) : null}
