@@ -1,91 +1,101 @@
 import React, { useRef, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom'
 import * as d3 from 'd3'
 import { setSelectedNeo } from '../actions/listAction'
 
-const height = 500;
-const width = 500;
-const margin = {
-  top: 20,
-  right: 40,
-  bottom: 30,
-  left: 40
-}
 const customElastic = d3.easeElastic.period(0.6)
 
 const Neos = (props) => {
   const dispatch = useDispatch()
-  const navigate = useNavigate();
-  const d3Container = useRef(null)
-
-  const x = d3.scaleLinear()
-    .domain([0, 1])
-    .range([0, 800])
-
-  const r = d3.scaleSqrt()
-    .domain([10, 300])
-    .range([1, 10])
+  const navigate = useNavigate()
+  const ref = useRef(null)
 
   const onClick = (d) => {
     dispatch(setSelectedNeo(d.id))
-    navigate(`/neo/${d.id}`);
+    navigate(`/neo/${d.id}`)
   }
 
-  useEffect(
-    () => {
-      if (props.data && d3Container.current) {
-        const data = Object.entries(props.data).reduce((acc, [ k, v ]) => {
-          return [ ...acc, ...v ]
-        }, [])
+  const randomInt = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+  }
 
-        const svg = d3.select(d3Container.current)
+  useEffect(() => {
+    if (!props.data || !ref.current) {
+      return null
+    }
+    const data = Object.entries(props.data).reduce((acc, [k, v]) => {
+      return [...acc, ...v]
+    }, [])
 
-        svg.selectAll('circle')
-          .data(data, d => d.id)
-          .join(
-            enter => {
-              return enter.append('circle')
-                .attr('cx', (d, i) => x(d.close_approach_data[0].miss_distance.astronomical))
-                .attr('cy', height / 2)
-                .style('stroke-width', 0)
-                .style('fill', d => d.is_potentially_hazardous_asteroid ? 'red' : 'black')
-                .transition().duration(1000).ease(customElastic)
-                  .attr('r', d => r(d.absolute_magnitude_h))
-            },
-            update => {
-              return update
-                .attr('cx', (d, i) => x(d.close_approach_data[0].miss_distance.astronomical))
-                .style('stroke-width', 3)
-                .transition().duration(2000)
-                  .style('fill', d => d.is_potentially_hazardous_asteroid ? 'red' : 'black')
-                  .attr('r', d => r(d.absolute_magnitude_h))
-                  .style('stroke-width', 0)
-            },
-            exit => {
-              exit
-                .transition().duration(1000)
-                .attr('r', 0)
-                .style('fill', 'transparent')
-            }
-          )
-          .style('stroke', '#000')
-          .on('click', (e, d) => onClick(d));
-      }
-    },
-  )
+    let height = ref.current.parentElement.offsetHeight - 196 - 80
+    let width = ref.current.parentElement.offsetWidth - 80
 
-  return (
-    <svg
-      ref={d3Container}
-      viewBox={`0 0 ${height} ${width}`}
-      style={{
-        height: "100%",
-        marginRight: "0px",
-        marginLeft: "0px",
-      }}
-    />
-  )
+    const x = d3
+      .scaleLinear()
+      .domain(
+        d3.extent(
+          data,
+          (d) => d.close_approach_data[0].miss_distance.astronomical
+        )
+      )
+      .range([20, width - 20])
+
+    const r = d3
+      .scaleSqrt()
+      .domain(d3.extent(data, (d) => d.absolute_magnitude_h))
+      .range([2, 10])
+
+    const svg = d3
+      .select(ref.current)
+      .attr('height', height)
+      .attr('width', width)
+
+    svg
+      .selectAll('circle')
+      .data(data, (d) => d.id)
+      .join(
+        (enter) => {
+          return enter
+            .append('circle')
+            .attr('cx', () => randomInt(-100, width + 100))
+            .attr('cy', height / 2)
+            .style('fill', (d) =>
+              d.is_potentially_hazardous_asteroid ? 'red' : '#ffe000'
+            )
+            .transition()
+            .duration(1000)
+            .ease(customElastic)
+            .attr('cx', (d, i) =>
+              x(d.close_approach_data[0].miss_distance.astronomical)
+            )
+            .attr('r', (d) => r(d.absolute_magnitude_h))
+        },
+        (update) => {
+          return update
+            .transition()
+            .duration(2000)
+            .style('fill', (d) =>
+              d.is_potentially_hazardous_asteroid ? 'red' : '#ffe000'
+            )
+            .attr('r', (d) => r(d.absolute_magnitude_h))
+            .attr('cx', (d, i) =>
+              x(d.close_approach_data[0].miss_distance.astronomical)
+            )
+        },
+        (exit) => {
+          exit
+            .transition()
+            .duration(1000)
+            .attr('cx', () => randomInt(-100, width + 100))
+            .attr('r', 0)
+            .style('fill', 'transparent')
+        }
+      )
+      .on('click', (e, d) => onClick(d))
+  })
+
+  return <svg ref={ref} />
 }
 
 export default Neos
