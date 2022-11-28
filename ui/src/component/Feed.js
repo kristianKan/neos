@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useGetNeosByDateQuery } from '../services/neoApi'
 import { setDate } from '../actions/listAction'
 import DatePicker from 'react-datepicker'
-import Neos from './Neos'
+import NeosGraphics from './NeosGraphics'
 import styled, { keyframes } from 'styled-components'
 
 import 'react-datepicker/dist/react-datepicker.css'
@@ -58,7 +58,7 @@ const Spinner = styled.div`
   animation-iteration-count: infinite;
 `
 
-const List = () => {
+const Feed = () => {
   const date = useSelector((state) => state.list.date)
   const dispatch = useDispatch()
   const { data, error, isFetching } = useGetNeosByDateQuery(date)
@@ -89,11 +89,11 @@ const List = () => {
       {error ? (
         <Error>Oh no... {error.error}</Error>
       ) : data ? (
-        <Neos data={data.near_earth_objects} />
+        <NeosGraphics data={data.near_earth_objects} />
       ) : null}
       <Asterisk>* date is a 7 day period starting on the selected day</Asterisk>
     </Container>
   )
 }
 
-export default List
+export default Feed

@@ -60,24 +60,18 @@ const Col = styled.div`
   padding-right: 10px;
 `
 
-const NeoDetails = (_) => {
+const Neo = (_) => {
   const params = useParams()
   let { id } = useSelector((state) => state.list)
 
+  // if the state is empty get id from the path
   if (!id) {
     id = params.id
   }
 
   const { data, error, isFetching } = useGetNeoByIdQuery(id)
-
-  let name
-  let isHazardous
-  let magnitude
-  if (data) {
-    name = data.name
-    isHazardous = data.is_potentially_hazardous_asteroid ? 'yes' : 'no'
-    magnitude = data.absolute_magnitude_h
-  }
+  const isHazardous =
+    data && data.is_potentially_hazardous_asteroid ? 'yes' : 'no'
 
   return (
     <Container>
@@ -89,7 +83,7 @@ const NeoDetails = (_) => {
         <Error>Oh no... {error.error}</Error>
       ) : data ? (
         <>
-          <StyledH1>{name}</StyledH1>
+          <StyledH1>{data.name}</StyledH1>
           <Details>
             <Col style={{ fontWeight: 'bold' }}>
               <Row>Id:</Row>
@@ -99,9 +93,9 @@ const NeoDetails = (_) => {
             </Col>
             <Col>
               <Row>{id}</Row>
-              <Row>{name}</Row>
+              <Row>{data.name}</Row>
               <Row>{isHazardous}</Row>
-              <Row>{magnitude}</Row>
+              <Row>{data.absolute_magnitude_h}</Row>
             </Col>
           </Details>
         </>
@@ -110,4 +104,4 @@ const NeoDetails = (_) => {
   )
 }
 
-export default NeoDetails
+export default Neo
