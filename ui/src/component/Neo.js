@@ -2,6 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { useParams, Link } from 'react-router-dom'
 import { useGetNeoByIdQuery } from '../services/neoApi'
+import NeoGraphics from './NeoGraphics'
 import styled, { keyframes } from 'styled-components'
 
 const Container = styled.div`
@@ -57,7 +58,7 @@ const Row = styled.div`
 `
 
 const Col = styled.div`
-  padding-right: 10px;
+  padding-right: 12px;
 `
 
 const Neo = (_) => {
@@ -83,15 +84,16 @@ const Neo = (_) => {
         <Error>Oh no... {error.error}</Error>
       ) : data ? (
         <>
+          <NeoGraphics data={data} />
           <StyledH1>{data.name}</StyledH1>
           <Details>
-            <Col style={{ fontWeight: 'bold' }}>
-              <Row>Id:</Row>
-              <Row>Name:</Row>
-              <Row>Hazardous:</Row>
-              <Row>Magnitude:</Row>
+            <Col style={{ textAlign: 'right' }}>
+              <Row>id</Row>
+              <Row>name</Row>
+              <Row>hazardous</Row>
+              <Row>magnitude</Row>
             </Col>
-            <Col>
+            <Col style={{ fontWeight: 'bold' }}>
               <Row>{id}</Row>
               <Row>{data.name}</Row>
               <Row>{isHazardous}</Row>
