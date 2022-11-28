@@ -16,6 +16,18 @@ const Neos = (props) => {
     navigate(`/neo/${d.id}`)
   }
 
+  const onMouseOver = (e, d) => {
+    const circle = d3.select(e.currentTarget)
+
+    circle.attr('r', circle.attr('r') * 2)
+  }
+
+  const onMouseOut = (e, d) => {
+    const circle = d3.select(e.currentTarget)
+
+    circle.attr('r', circle.attr('r') / 2)
+  }
+
   const randomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min
   }
@@ -24,6 +36,7 @@ const Neos = (props) => {
     if (!props.data || !ref.current) {
       return null
     }
+
     const data = Object.entries(props.data).reduce((acc, [k, v]) => {
       return [...acc, ...v]
     }, [])
@@ -92,7 +105,10 @@ const Neos = (props) => {
             .style('fill', 'transparent')
         }
       )
+      .attr('cursor', 'pointer')
       .on('click', (e, d) => onClick(d))
+      .on('mouseover', (e, d) => onMouseOver(e, d))
+      .on('mouseout', (e, d) => onMouseOut(e, d))
   })
 
   return <svg ref={ref} />
