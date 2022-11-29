@@ -92,12 +92,16 @@ const Neo = (_) => {
               <Row>name</Row>
               <Row>hazardous</Row>
               <Row>magnitude</Row>
+              <Row>min diameter</Row>
+              <Row>max diameter</Row>
             </Col>
             <Col style={{ fontWeight: 'bold' }}>
               <Row>{id}</Row>
               <Row>{data.name}</Row>
               <Row>{isHazardous}</Row>
               <Row>{data.absolute_magnitude_h}</Row>
+              <Row>{data.estimated_diameter.meters.estimated_diameter_min.toFixed()} meters</Row>
+              <Row>{data.estimated_diameter.meters.estimated_diameter_max.toFixed()} meters</Row>
             </Col>
           </Details>
         </>

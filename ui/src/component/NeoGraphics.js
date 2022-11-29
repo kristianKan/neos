@@ -17,23 +17,22 @@ const NeoGraphics = (props) => {
   // an ease function to make animation more funky
   const customElastic = d3.easeElastic.period(0.6)
 
-  const drawCircle = ({ data, height, width, r }) => {
+  const drawCircle = ({ data, colour, height, width, r }) => {
     return (node) => {
       node
         .selectAll('circle')
-        .data([data])
+        .data(data)
         .join((enter) => {
           return enter
             .append('circle')
             .attr('cx', width / 2)
             .attr('cy', height / 2)
-            .style('fill', (d) =>
-              d.is_potentially_hazardous_asteroid ? 'red' : '#ffe000'
-            )
+            .style('fill', colour)
+            .attr('opacity', 0.5)
             .transition()
             .duration(2000)
             .ease(customElastic)
-            .attr('r', (d) => r(d.absolute_magnitude_h))
+            .attr('r', (v) => r(v))
         })
     }
   }
@@ -46,20 +45,26 @@ const NeoGraphics = (props) => {
 
     const { data } = props
 
-    let height = ref.current.parentElement.offsetHeight
-    let width = ref.current.parentElement.offsetWidth
+    const {
+      estimated_diameter_min: min,
+      estimated_diameter_max: max
+    } = data.estimated_diameter.meters
+
+    const colour = data.is_potentially_hazardous_asteroid ? 'red' : '#ffe000';
+    const height = ref.current.parentElement.offsetHeight
+    const width = ref.current.parentElement.offsetWidth
 
     // set r scale to map magnitude to circle radius
     const r = d3
       .scaleSqrt()
-      .domain([10, 40])
+      .domain([10, 10000])
       .range([10, height / 2])
 
     // select ref and draw all components
     d3.select(ref.current)
       .attr('height', height)
       .attr('width', width)
-      .call(drawCircle({ data, height, width, r }))
+      .call(drawCircle({ data: [min, max], colour, height, width, r }))
   })
 
   return (

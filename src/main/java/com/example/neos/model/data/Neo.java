@@ -17,5 +17,7 @@ public class Neo {
     private boolean isHazardous;
     @JsonProperty("close_approach_data")
     public ArrayList<CloseApproachDatum> closeApproachData;
+    @JsonProperty("estimated_diameter")
+    public EstimatedDiameter estimatedDiameter;
     
 }
