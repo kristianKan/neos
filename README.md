@@ -17,9 +17,14 @@ The backend is configured to run on port 8080
 
 ## The UI
 
-The frontend is bootstrapped with Create React App so once you navigate the root
-folder `ui` run `npm install` to install dependencies and then `npm start`
+The frontend is bootstrapped with Create React App.
 
-The app will start in the development mode on port 3000
+* run `npm install` inside the `ui` folder, this will install all the dependencies
+
+* running `npm start` will start the application with a default API key from
+    NASA's Web Service which has very low rate limits. Instead provide your own API Key
+    via `REACT_APP_API_KEY=<your API key> npm start`
+
+By default the app will start in the development mode on port 3000.
 
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
