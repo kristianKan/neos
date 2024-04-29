@@ -1,4 +1,4 @@
-import { SET_DATE, SET_SELECTED_NEO } from '../actionTypes/actionTypes'
+import { SET_DATE, SET_SELECTED_NEO, SET_SELECTED_INDEX } from '../actionTypes/actionTypes'
 
 const setDate = (date) => {
   return {
@@ -14,4 +14,12 @@ const setSelectedNeo = (id) => {
   }
 }
 
-export { setDate, setSelectedNeo }
+const setSelectedIndex = ({unit, date, isL2R}) => {
+  return {
+    type: SET_SELECTED_INDEX,
+    [unit]: date,
+    isL2R
+  }
+}
+
+export { setDate, setSelectedNeo, setSelectedIndex }

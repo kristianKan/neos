@@ -1,2 +1,3 @@
 export const SET_DATE = 'SET_DATE'
 export const SET_SELECTED_NEO = 'SET_SELECTED_NEO'
+export const SET_SELECTED_INDEX = 'SET_SELECTED_INDEX'

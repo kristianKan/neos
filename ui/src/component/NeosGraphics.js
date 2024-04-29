@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import * as d3 from 'd3'
 import { setSelectedNeo } from '../actions/listAction'
@@ -14,8 +14,7 @@ const NeosGraphics = (props) => {
   const navigate = useNavigate()
   const ref = useRef(null)
 
-  // an ease function to make animation more funky
-  const customElastic = d3.easeElastic.period(0.6)
+  const { isL2R } = useSelector(state => state.list.index)
 
   // should be moved to utils
   const randomInt = (min, max) => {
@@ -83,15 +82,14 @@ const NeosGraphics = (props) => {
           (enter) => {
             return enter
               .append('circle')
-              .attr('cx', () => randomInt(-100, width + 100))
+              .attr('cx', () => isL2R ? randomInt(-width * 2, -width) : randomInt(width + 100, width * 2))
               .attr('cy', height / 2)
               .style('fill', (d) =>
                 d.is_potentially_hazardous_asteroid ? 'red' : '#ffe000'
               )
               .attr('opacity', 0.8)
               .transition()
-              .duration(1000)
-              .ease(customElastic)
+              .duration(800)
               .attr('cx', (d, i) =>
                 x(d.close_approach_data[0].miss_distance.astronomical)
               )
@@ -100,7 +98,7 @@ const NeosGraphics = (props) => {
           (update) => {
             return update
               .transition()
-              .duration(2000)
+              .duration(1000)
               .style('fill', (d) =>
                 d.is_potentially_hazardous_asteroid ? 'red' : '#ffe000'
               )
@@ -112,10 +110,9 @@ const NeosGraphics = (props) => {
           (exit) => {
             exit
               .transition()
-              .duration(1000)
-              .attr('cx', () => randomInt(-100, width + 100))
-              .attr('r', 0)
-              .style('fill', 'transparent')
+              .duration(1200)
+              .attr('cx', () => isL2R ? randomInt(width + 100, width * 2) : randomInt(-width * 2, -width))
+              .remove()
           }
         )
         .attr('cursor', 'pointer')
@@ -128,7 +125,7 @@ const NeosGraphics = (props) => {
   useEffect(() => {
     // if there's no date and no ref, there's nothing to do here
     if (!props.data || !ref.current) {
-      return null
+      return
     }
 
     //TODO move this logic to backend
@@ -136,7 +133,7 @@ const NeosGraphics = (props) => {
       // move all the crazy data into a nice array
       .reduce((acc, [k, v]) => [...acc, ...v], [])
       // sort by magnitude so larger neos are drawn first
-      .sort((a, b) => b.absolute_magnitude_h - a.absolute_magnitude_h)
+      .sort((a, b) => a.absolute_magnitude_h - b.absolute_magnitude_h)
 
     // some quick and dirty layout calculations
     let height = ref.current.parentElement.offsetHeight - TOP - MARGIN * 2
@@ -152,7 +149,7 @@ const NeosGraphics = (props) => {
     const r = d3
       .scaleSqrt()
       .domain(d3.extent(data, (d) => d.absolute_magnitude_h))
-      .range([2, 10])
+      .range([10, 2]) // lower magnitude -> bigger circle
 
     // select ref and draw all components
     d3.select(ref.current)

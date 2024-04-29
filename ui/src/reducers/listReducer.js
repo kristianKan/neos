@@ -1,14 +1,21 @@
-import { SET_DATE, SET_SELECTED_NEO } from '../actionTypes/actionTypes'
+import { SET_DATE, SET_SELECTED_NEO, SET_SELECTED_INDEX } from '../actionTypes/actionTypes'
 
 const timeElapsed = Date.now()
 const date = new Date(timeElapsed)
 const start = date.toISOString().split('T')[0]
+const [year, month, day] = start.split('-').map(Number);
 
 const initialState = {
   date: {
     start: start,
-    end: new Date(date.setDate(date.getDate() + 6)).toISOString().split('T')[0],
+    end: start
   },
+  index: { 
+    day,
+    month,
+    year,
+    isL2R: true
+  }
 }
 
 export const listReducer = (state = initialState, action) => {
@@ -23,6 +30,17 @@ export const listReducer = (state = initialState, action) => {
       return {
         ...state,
         id: action.id,
+      }
+
+    case SET_SELECTED_INDEX:
+      return {
+        ...state,
+        index: { 
+          day: action.day ? action.day : state.index.day,
+          month: action.month ? action.month : state.index.month,
+          year: action.year ? action.year : state.index.year,
+          isL2R: action.isL2R
+        }
       }
 
     default:
