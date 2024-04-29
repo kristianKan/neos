@@ -1,9 +1,9 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { useGetNeosByDateQuery } from '../services/neoApi'
+import { useGetNeosByDateQuery } from '../../services/neoApi'
 
-import DatePicker from './DatePicker'
-import NeosGraphics from './NeosGraphics'
+import DatePicker from '../../features/datePicker/DatePicker'
+import NeosGraphics from './NeosFeedGraphics'
 import styled, { keyframes } from 'styled-components'
 
 const Container = styled.div`
@@ -51,8 +51,10 @@ const Spinner = styled.div`
   animation-iteration-count: infinite;
 `
 
-const Feed = () => {
-  const { date } = useSelector((state) => state.list)
+const NeosFeed = () => {
+  const { day, month, year } = useSelector((state) => state.datePicker.date)
+  const dateFormatted = `${year}-${month}-${day}`
+  const date = { start: dateFormatted, end: dateFormatted }
   const { data, error, isFetching } = useGetNeosByDateQuery(date)
 
   return (
@@ -75,4 +77,4 @@ const Feed = () => {
   )
 }
 
-export default Feed
+export default NeosFeed

@@ -2,7 +2,8 @@ import React, { useRef, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import * as d3 from 'd3'
-import { setSelectedNeo } from '../actions/listAction'
+
+import { neoSet } from './neosFeedSlice'
 
 // side margin
 const MARGIN = 40
@@ -14,7 +15,7 @@ const NeosGraphics = (props) => {
   const navigate = useNavigate()
   const ref = useRef(null)
 
-  const { isL2R } = useSelector(state => state.list.index)
+  const { isL2R } = useSelector(state => state.datePicker)
 
   // should be moved to utils
   const randomInt = (min, max) => {
@@ -22,7 +23,7 @@ const NeosGraphics = (props) => {
   }
 
   const onClick = (d) => {
-    dispatch(setSelectedNeo(d.id))
+    dispatch(neoSet(d.id))
     navigate(`/neo/${d.id}`)
   }
 

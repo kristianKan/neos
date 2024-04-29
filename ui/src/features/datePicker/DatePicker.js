@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components'
-import { setSelectedIndex, setDate } from '../actions/listAction'
+import { isL2RSet, dateSet } from './datePickerSlice'
 
 const StyledContainer = styled.div`
   display: flex;
@@ -34,8 +34,8 @@ function getDaysInMonth(month, year) {
 const DatePicker = ({ unit }) => {
   const dispatch = useDispatch()
   const [currentIndex, setCurrentIndex] = useState(0);
-  const selectedDate = useSelector(state => state.list.index[unit]);
-  const { day, month, year } = useSelector(state => state.list.index);
+  const selectedDate = useSelector(state => state.datePicker.date[unit]);
+  const { day, month, year } = useSelector(state => state.datePicker.date);
   const [dates, setDates] = useState([]);
   const selectedRef = useRef(null);
 
@@ -67,16 +67,13 @@ const DatePicker = ({ unit }) => {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    dispatch(setDate({start: `${year}-${month}-${day}`, end: `${year}-${month}-${day}`}));
-  }, [year, month, day, dispatch]);
-
-  const handleMouseDown = (date) => {
-    const index = dates.indexOf(date);
+  const handleMouseDown = (value) => {
+    const index = dates.indexOf(value);
     if (index !== -1) {
       const isL2R = index > currentIndex;
       setCurrentIndex(index);
-      dispatch(setSelectedIndex({unit, date, isL2R}))
+      dispatch(isL2RSet({ isL2R }))
+      dispatch(dateSet({ unit, value }))
     }
   };
 

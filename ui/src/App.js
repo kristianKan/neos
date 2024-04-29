@@ -2,8 +2,8 @@ import { Provider } from 'react-redux'
 import { store } from './store'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import Feed from './component/Feed'
-import Neo from './component/Neo'
+import NeosFeed from './features/neosFeed/NeosFeed'
+import Neo from './features/neo/Neo'
 
 function App() {
   return (
@@ -11,8 +11,8 @@ function App() {
       <BrowserRouter>
         <div>
           <Routes>
-            <Route exact path="/" element={<Feed />} />
-            <Route exact path="/:date" element={<Feed />} />
+            <Route exact path="/" element={<NeosFeed />} />
+            <Route exact path="/:date" element={<NeosFeed />} />
             <Route exact path="/neo/:id" element={<Neo />} />
           </Routes>
         </div>

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { useParams, Link } from 'react-router-dom'
-import { useGetNeoByIdQuery } from '../services/neoApi'
+import { useGetNeoByIdQuery } from '../../services/neoApi'
 import NeoGraphics from './NeoGraphics'
 import styled, { keyframes } from 'styled-components'
 
@@ -63,7 +63,7 @@ const Col = styled.div`
 
 const Neo = (_) => {
   const params = useParams()
-  let { id } = useSelector((state) => state.list)
+  let { id } = useSelector((state) => state.neosFeed)
 
   // if the state is empty get id from the path
   if (!id) {
