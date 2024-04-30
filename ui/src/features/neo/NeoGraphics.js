@@ -3,15 +3,16 @@ import * as d3 from 'd3'
 import styled from 'styled-components'
 
 const Container = styled.div`
+  background-color: #030539;
+  background-color: rgb(3 5 57 / 30%);
+  backdrop-filter: blur(6px);
   position: absolute;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
+  height: calc(100vh - 4px);
+  width: calc(100vw - 40px);
   z-index: -1;
 `
 
-const NeoGraphics = (props) => {
+const NeoGraphics = ({ data, isFetching}) => {
   const ref = useRef(null)
 
   // an ease function to make animation more funky
@@ -39,11 +40,9 @@ const NeoGraphics = (props) => {
 
   useEffect(() => {
     // if there's no date and no ref, there's nothing to do here
-    if (!props.data || !ref.current) {
-      return null
+    if (!data || !ref.current) {
+      return 
     }
-
-    const { data } = props
 
     const {
       estimated_diameter_min: min,

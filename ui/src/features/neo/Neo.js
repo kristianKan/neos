@@ -1,29 +1,47 @@
 import React from 'react'
+import { useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { useParams, Link } from 'react-router-dom'
+import styled from 'styled-components'
+
 import { useGetNeoByIdQuery } from '../../services/neoApi'
 import NeoGraphics from './NeoGraphics'
-import styled, { keyframes } from 'styled-components'
 
 const Container = styled.div`
-  margin: 40px;
   color: #fff;
-  height: 100vh;
-  width: 100vw;
+  display: flex;
+  justify-content: space-between;
+  width: calc(100vw - 40px);
+  position: absolute;
+  z-index: 1;
+`
+
+const DataContainer = styled.div`
+  display: flex;
+  flex-direction: column;
 `
 
 const Button = styled.button`
+  color: #030539;
   background-color: #ffe000;
-  font-size: 18px;
+  border-top: none;
+  border-left: none;
+  border-right: 2px solid lawngreen; 
+  border-bottom: 2px solid lawngreen;
+  font-size: 24px;
+  cursor: pointer;
 `
 
 const Details = styled.section`
+  color: rgb(255 255 255 / 80%);
+  font-size: 16px;
   display: flex;
   flex-direction: row;
   margin-top: 20px;
 `
 
 const StyledH1 = styled.h1`
+  background-color: #030539;
   color: #ff00ff;
   font-size: 50px;
 `
@@ -37,22 +55,6 @@ const Error = styled.div`
   color: #ffe000;
 `
 
-const Spin = keyframes`
-  0% { transform: rotate(0deg) }
-  100% { transform: rotate(360deg) }
-`
-
-const Spinner = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  font-size: 50px;
-  color: #fff;
-  animation-name: ${Spin};
-  animation-duration: 2s;
-  animation-iteration-count: infinite;
-`
-
 const Row = styled.div`
   padding: 2px;
 `
@@ -63,31 +65,26 @@ const Col = styled.div`
 
 const Neo = (_) => {
   const params = useParams()
-  let { id } = useSelector((state) => state.neosFeed)
-
-  // if the state is empty get id from the path
-  if (!id) {
-    id = params.id
-  }
+  const location = useLocation()
+  const id = useSelector((state) => state.neosFeed.id) || params.id
+  const d = location.state.datum
 
   const { data, error, isFetching } = useGetNeoByIdQuery(id)
-  const isHazardous =
-    data && data.is_potentially_hazardous_asteroid ? 'yes' : 'no'
+  const isHazardous = isFetching ? '' : data.is_potentially_hazardous_asteroid ? 'yes' : 'no'
+  const name = isFetching ? d ? d.name : '' : data.name 
+  const magnitude = isFetching ? '' : data.absolute_magnitude_h
+  const minDiameter = isFetching ? '' : data.estimated_diameter.meters.estimated_diameter_min.toFixed()
+  const maxDiameter = isFetching ? '' : data.estimated_diameter.meters.estimated_diameter_max.toFixed()
 
   return (
     <Container>
-      {isFetching ? <Spinner>🌚</Spinner> : null}
-      <Link to="/">
-        <Button>←</Button>
-      </Link>
-      {error ? (
-        <Error>Oh no... {error.error}</Error>
-      ) : data ? (
-        <>
-          <NeoGraphics data={data} />
-          <StyledH1>{data.name}</StyledH1>
+      {error && ( <Error>Oh no... {error.error}</Error> )}
+      <>
+        <DataContainer>
+          {<NeoGraphics data={data} isFetching={isFetching} />}
+          <StyledH1>{name}</StyledH1>
           <Details>
-            <Col style={{ textAlign: 'right' }}>
+            <Col style={{ textAlign: 'right', fontWeight: 100 }}>
               <Row>id</Row>
               <Row>name</Row>
               <Row>hazardous</Row>
@@ -95,17 +92,20 @@ const Neo = (_) => {
               <Row>min diameter</Row>
               <Row>max diameter</Row>
             </Col>
-            <Col style={{ fontWeight: 'bold' }}>
+            <Col style={{ fontWeight: 800 }}>
               <Row>{id}</Row>
-              <Row>{data.name}</Row>
+              <Row>{name}</Row>
               <Row>{isHazardous}</Row>
-              <Row>{data.absolute_magnitude_h}</Row>
-              <Row>{data.estimated_diameter.meters.estimated_diameter_min.toFixed()} meters</Row>
-              <Row>{data.estimated_diameter.meters.estimated_diameter_max.toFixed()} meters</Row>
+              <Row>{magnitude}</Row>
+              <Row>{minDiameter} meters</Row>
+              <Row>{maxDiameter} meters</Row>
             </Col>
           </Details>
-        </>
-      ) : null}
+        </DataContainer>
+        <Link to="/">
+          <Button>{'<'}</Button>
+        </Link>
+      </>
     </Container>
   )
 }

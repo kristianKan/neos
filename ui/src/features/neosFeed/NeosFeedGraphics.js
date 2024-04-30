@@ -24,7 +24,7 @@ const NeosGraphics = (props) => {
 
   const onClick = (d) => {
     dispatch(neoSet(d.id))
-    navigate(`/neo/${d.id}`)
+    navigate(`/neo/${d.id}`, { state: { datum: d } })
   }
 
   const onMouseOver = (e, d) => {

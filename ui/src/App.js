@@ -11,9 +11,10 @@ function App() {
       <BrowserRouter>
         <div>
           <Routes>
-            <Route exact path="/" element={<NeosFeed />} />
-            <Route exact path="/:date" element={<NeosFeed />} />
-            <Route exact path="/neo/:id" element={<Neo />} />
+            <Route path="/" element={<NeosFeed />}>
+              <Route path="neo/:id" element={<Neo />} />
+            </Route>
+            <Route path="/:date" element={<NeosFeed />} />
           </Routes>
         </div>
       </BrowserRouter>

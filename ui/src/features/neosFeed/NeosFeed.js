@@ -1,10 +1,12 @@
 import React from 'react'
+import { Outlet } from 'react-router-dom';
 import { useSelector } from 'react-redux'
-import { useGetNeosByDateQuery } from '../../services/neoApi'
+import styled from 'styled-components'
 
-import DatePicker from '../../features/datePicker/DatePicker'
+import { useGetNeosByDateQuery } from '../../services/neoApi'
+import DatePicker from '../datePicker/DatePicker'
 import NeosGraphics from './NeosFeedGraphics'
-import styled, { keyframes } from 'styled-components'
+import Spinner from '../spinner/Spinner'
 
 const Container = styled.div`
   display: flex;
@@ -35,22 +37,6 @@ const Error = styled.div`
   color: #ffe000;
 `
 
-const Spin = keyframes`
-  0% { transform: rotate(0deg) }
-  100% { transform: rotate(360deg) }
-`
-
-const Spinner = styled.div`
-  position: absolute;
-  top: 45%;
-  left: 50%;
-  font-size: 50px;
-  color: #fff;
-  animation-name: ${Spin};
-  animation-duration: 2s;
-  animation-iteration-count: infinite;
-`
-
 const NeosFeed = () => {
   const { day, month, year } = useSelector((state) => state.datePicker.date)
   const dateFormatted = `${year}-${month}-${day}`
@@ -58,22 +44,25 @@ const NeosFeed = () => {
   const { data, error, isFetching } = useGetNeosByDateQuery(date)
 
   return (
-    <Container>
-      {isFetching ? <Spinner>🌚</Spinner> : null}
-      <Header>
-        <StyledH1>NEOs</StyledH1>
-      </Header>
-      {error ? (
-        <Error>Oh no... {error.error}</Error>
-      ) : data ? (
-        <NeosGraphics data={data.near_earth_objects} />
-      ) : null}
-      <DatePickerContainer>
-        <DatePicker unit="year"/>
-        <DatePicker unit="month"/>
-        <DatePicker unit="day"/>
-      </DatePickerContainer>
-    </Container>
+    <>
+      {isFetching ? <Spinner /> : null}
+      <Container>
+        <Header>
+          <StyledH1>NEOs</StyledH1>
+        </Header>
+        {error ? (
+          <Error>Oh no... {error.error}</Error>
+        ) : data ? (
+          <NeosGraphics data={data.near_earth_objects} />
+        ) : null}
+        <DatePickerContainer>
+          <DatePicker unit="year"/>
+          <DatePicker unit="month"/>
+          <DatePicker unit="day"/>
+        </DatePickerContainer>
+        <Outlet />
+      </Container>
+    </>
   )
 }
 
